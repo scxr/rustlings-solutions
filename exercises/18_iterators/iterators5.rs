@@ -6,7 +6,7 @@
 
 use std::collections::HashMap;
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum Progress {
     None,
     Some,
@@ -28,8 +28,15 @@ fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
 fn count_iterator(map: &HashMap<String, Progress>, value: Progress) -> usize {
     // `map` is a hash map with `String` keys and `Progress` values.
     // map = { "variables1": Complete, "from_str": None, … }
+    map.values().fold(0, |acc, prog| {
+        if *prog == value {
+            acc+1
+        } else {
+            acc
+        }
+    })
+    
 }
-
 fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
     let mut count = 0;
     for map in collection {
@@ -41,13 +48,16 @@ fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progres
     }
     count
 }
-
 // TODO: Implement the functionality of `count_collection_for` but with an
 // iterator instead of a `for` loop.
 fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
     // `collection` is a slice of hash maps.
     // collection = [{ "variables1": Complete, "from_str": None, … },
     //               { "variables2": Complete, … }, … ]
+    let mut cnt = 0;
+    collection.iter().flatten().filter(|(_, prog)| **prog == value).count()
+    
+    
 }
 
 fn main() {
